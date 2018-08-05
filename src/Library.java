@@ -9,6 +9,7 @@ public class Library {
     LinkedList<Patron> patrons = new LinkedList<>();
 
     public Library() {
+        System.out.println("Welcome to the Library!");
         catalogue = new Catalogue();
     }
 
@@ -17,7 +18,6 @@ public class Library {
     }
 
     private void mainMenu() {
-        System.out.println("Welcome to the Library!");
         System.out.println("Please make a selection from the menu: ");
         System.out.println("\n1. Explore the catalogue");
         System.out.println("2. View your patron record");
@@ -33,30 +33,35 @@ public class Library {
 
         char selection = sc.nextLine().toLowerCase().charAt(0);
 
-        switch (selection) {
-            case '1':
-                catalogue.catalogueMenu();
-                break;
-            case '2':
-                patron.showRecord();
-                break;
-            case '3':
-                patron.showFavourites();
-                break;
-            case '4':
-                adminMenu();
-                break;
-            case 'x':
-                System.exit(0);
-            default:
-                System.out.print("Please enter a valid input: ");
-                mainSelection();
-                break;
+        while (selection != 'x') {
+
+            switch (selection) {
+                case '1':
+                    catalogue.catalogueMenu();
+                    break;
+                case '2':
+                    patron.showRecord();
+                    break;
+                case '3':
+                    patron.showFavourites();
+                    break;
+                case '4':
+                    System.out.println("Welcome to the administration menu!");
+                    adminMenu();
+                    break;
+                case 'x':
+                    System.exit(0);
+                default:
+                    System.out.print("Please enter a valid input: ");
+                    mainSelection();
+                    break;
+            }
+            mainMenu();
+            mainSelection();
         }
     }
 
     private void adminMenu() {
-        System.out.println("Welcome to the administration menu!");
         System.out.println("Please make a selection from the menu: ");
         System.out.println("\n1. Add a patron");
         System.out.println("2. Remove a patron");
@@ -71,12 +76,13 @@ public class Library {
     private void adminSelection() {
         char selection = sc.nextLine().toLowerCase().charAt(0);
 
+
         switch (selection) {
             case '1':
-                patrons.add(new Patron(sc.nextLine()));
+                addPatron();
                 break;
             case '2':
-                patron.showRecord();
+                removePatron();
                 break;
             case '3':
                 patron.showFavourites();
@@ -93,4 +99,21 @@ public class Library {
         }
     }
 
+    private void addPatron() {
+        patrons.add(new Patron(sc.nextLine()));
+    }
+
+    private void removePatron() {
+        if (patrons.isEmpty()) {
+            System.out.println("There are no patrons in the system. ");
+        }
+        else {
+            String patronToRemove = sc.nextLine();
+
+            if (patrons.contains(patronToRemove))
+                patrons.remove(patronToRemove);
+            else
+                System.out.println("This patron does not exist in the system. ");
+        }
+    }
 }
