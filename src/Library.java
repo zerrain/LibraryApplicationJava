@@ -3,28 +3,29 @@ import java.util.Scanner;
 
 public class Library {
 
-    public Scanner sc = new Scanner(System.in);
+    public static final Scanner sc = new Scanner(System.in);
     private Catalogue catalogue;
     private Patron patron;
     LinkedList<Patron> patrons = new LinkedList<>();
 
     public Library() {
         System.out.println("Welcome to the Library!");
-        catalogue = new Catalogue();
+        catalogue = new Catalogue(this);
+        patron = new Patron();
     }
 
     public static void main(String[] args) {
         new Library().mainMenu();
     }
 
-    private void mainMenu() {
-        System.out.println("Please make a selection from the menu: ");
+    public void mainMenu() {
+        System.out.println("\nPlease make a selection from the menu: ");
         System.out.println("\n1. Explore the catalogue");
         System.out.println("2. View your patron record");
         System.out.println("3. Show your favourite books");
         System.out.println("4. Enter Admin mode");
         System.out.println("X. Exit the system");
-        System.out.print("Enter a choice: ");
+        System.out.print("\nEnter a choice: ");
 
         mainSelection();
     }
@@ -48,9 +49,6 @@ public class Library {
                 case '4':
                     System.out.println("Welcome to the administration menu!");
                     adminMenu();
-                    break;
-                case 'x':
-                    System.exit(0);
                 default:
                     System.out.print("Please enter a valid input: ");
                     mainSelection();
@@ -59,16 +57,18 @@ public class Library {
             mainMenu();
             mainSelection();
         }
+
+        System.exit(0);
     }
 
     private void adminMenu() {
-        System.out.println("Please make a selection from the menu: ");
+        System.out.println("\nPlease make a selection from the menu: ");
         System.out.println("\n1. Add a patron");
         System.out.println("2. Remove a patron");
         System.out.println("3. Add a book to the catalogue");
         System.out.println("4. Remove a book from the catalogue");
         System.out.println("R. Return to the previous menu");
-        System.out.print("Enter a choice: ");
+        System.out.print("\nEnter a choice: ");
 
         adminSelection();
     }
@@ -76,44 +76,59 @@ public class Library {
     private void adminSelection() {
         char selection = sc.nextLine().toLowerCase().charAt(0);
 
-
-        switch (selection) {
-            case '1':
-                addPatron();
-                break;
-            case '2':
-                removePatron();
-                break;
-            case '3':
-                patron.showFavourites();
-                break;
-            case '4':
-                adminMenu();
-                break;
-            case 'x':
-                System.exit(0);
-            default:
-                System.out.print("Please enter a valid input: ");
-                mainSelection();
-                break;
+        while (selection != 'r') {
+            switch (selection) {
+                case '1':
+                    addPatron();
+                    break;
+                case '2':
+                    removePatron();
+                    break;
+                case '3':
+                    catalogue.addBook();
+                    break;
+                case '4':
+                    catalogue.removeBook();
+                    break;
+                default:
+                    System.out.print("Please enter a valid input: ");
+                    break;
+            }
+            adminMenu();
         }
+
+        mainMenu();
     }
 
     private void addPatron() {
-        patrons.add(new Patron(sc.nextLine()));
+        System.out.print("Enter the patron name to be added: ");
+        Patron newPatron = new Patron(sc.nextLine());
+        patrons.add(newPatron);
+
+
+        System.out.println(newPatron + " added");
     }
 
     private void removePatron() {
+        boolean patronExists = false;
         if (patrons.isEmpty()) {
             System.out.println("There are no patrons in the system. ");
         }
         else {
+            System.out.print("Enter the patron name to be removed: ");
             String patronToRemove = sc.nextLine();
 
-            if (patrons.contains(patronToRemove))
-                patrons.remove(patronToRemove);
-            else
+            for (Patron patron : patrons)
+                if (patron.getName().equals(patronToRemove)) {
+                    patrons.remove(patron);
+                    System.out.println("Patron " + patronToRemove + " has been removed!");
+                    patronExists = true;
+                }
+
+            if (!patronExists)
                 System.out.println("This patron does not exist in the system. ");
         }
     }
+
+
 }
