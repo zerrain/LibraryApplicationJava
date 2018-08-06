@@ -3,8 +3,8 @@ import java.util.LinkedList;
 public class Patron {
 
     private String name;
-    private LinkedList<Book> borrowed = new LinkedList<Book>();
-    private LinkedList<Book> favourites = new LinkedList<Book>();
+    private LinkedList<Book> borrowed = new LinkedList<>();
+    private LinkedList<Book> favourites = new LinkedList<>();
 
     public Patron() {
 

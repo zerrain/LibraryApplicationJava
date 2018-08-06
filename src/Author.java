@@ -10,6 +10,10 @@ public class Author {
         this.authorName = authorName;
     }
 
+    public String getAuthorName() {
+        return this.authorName;
+    }
+
     @Override
     public String toString() {
         return this.authorName;

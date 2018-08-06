@@ -14,8 +14,28 @@ public class Book {
         this.genreName = genreName;
     }
 
+    public String getBookName() {
+        return this.bookName;
+    }
+
+    public String getAuthorName() {
+        return this.authorName.getAuthorName();
+    }
+
+    public Author getAuthor() {
+        return this.authorName;
+    }
+
+    public String getGenreName() {
+        return this.genreName.getGenreName();
+    }
+
+    public Genre getGenre() {
+        return this.genreName;
+    }
+
     @Override
     public String toString() {
-        return "Name: " + this.bookName + "\nAuthor: " + this.authorName + "\nGenre: " + this.genreName;
+        return "Name: " + this.bookName + "\tAuthor: " + this.authorName + "\tGenre: " + this.genreName;
     }
 }

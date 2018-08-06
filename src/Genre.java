@@ -10,6 +10,10 @@ public class Genre {
         this.genreName = genreName;
     }
 
+    public String getGenreName() {
+        return this.genreName;
+    }
+
     @Override
     public String toString() {
         return this.genreName;

@@ -5,13 +5,11 @@ public class Library {
 
     public static final Scanner sc = new Scanner(System.in);
     private Catalogue catalogue;
-    private Patron patron;
-    LinkedList<Patron> patrons = new LinkedList<>();
+    private static LinkedList<Patron> patrons = new LinkedList<>();
 
     public Library() {
         System.out.println("Welcome to the Library!");
         catalogue = new Catalogue(this);
-        patron = new Patron();
     }
 
     public static void main(String[] args) {
@@ -41,10 +39,10 @@ public class Library {
                     catalogue.catalogueMenu();
                     break;
                 case '2':
-                    patron.showRecord();
+                    //TODO patron.showRecord();
                     break;
                 case '3':
-                    patron.showFavourites();
+                    //TODO patron.showFavourites();
                     break;
                 case '4':
                     System.out.println("Welcome to the administration menu!");
