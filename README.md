@@ -1,6 +1,6 @@
 # LibraryApplicationJava SPECS
 
-# MAIN MENU
+<h2>MAIN MENU </h2>
 
 "Welcome to the Library!"
 
@@ -18,7 +18,7 @@
 
 "Enter a choice: "
 
-# ADMIN MENU
+<h2>ADMIN MENU</h2>
 
 "Welcome to the administration menu: "
 
@@ -34,7 +34,7 @@
 
 "Enter a choice: "
 
-# CATALOGUE MENU
+<h2>CATALOGUE MENU</h2>
 
 "Welcome to the Catalogue!"
 
@@ -44,7 +44,7 @@
 
 "2. Display all available books."
 
-"3. Display all genres.")
+"3. Display all genres."
 
 "4. Display books in a genre."
 
