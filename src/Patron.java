@@ -14,15 +14,33 @@ public class Patron {
         this.name = name;
     }
 
-    public void showRecord() {
-        for (Book book : borrowed)
-            System.out.println(book);
+    public void borrowBook(Book book) {
+        borrowed.add(book);
+        System.out.println("The book " + book + " is now borrowed by the patron " + name);
+    }
+
+    public void favouriteBook(Book book) {
+        favourites.add(book);
+        System.out.println("The book " + book + " is now favourited by the patron " + name);
+    }
+
+    public void showBorrowed() {
+        if (borrowed.isEmpty())
+            System.out.println("The patron " + name + " has no borrowed books");
+        else
+            for (Book book : borrowed)
+                System.out.println(book);
     }
 
     public void showFavourites() {
-        for (Book book : favourites)
-            System.out.println(book);
+        if (favourites.isEmpty())
+            System.out.println("The patron " + name + " has no favourite books");
+        else
+            for (Book book : favourites)
+                System.out.println(book);
     }
+
+
 
     public String getName() {
         return this.name;

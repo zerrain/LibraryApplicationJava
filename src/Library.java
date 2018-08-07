@@ -6,6 +6,8 @@ public class Library {
     public static final Scanner sc = new Scanner(System.in);
     private Catalogue catalogue;
     private static LinkedList<Patron> patrons = new LinkedList<>();
+    private static Patron selectedPatron;
+    private Boolean patreonSelected = false;
 
     public Library() {
         System.out.println("Welcome to the Library!");
@@ -18,10 +20,11 @@ public class Library {
 
     public void mainMenu() {
         System.out.println("\nPlease make a selection from the menu: ");
-        System.out.println("\n1. Explore the catalogue");
-        System.out.println("2. View your patron record");
-        System.out.println("3. Show your favourite books");
-        System.out.println("4. Enter Admin mode");
+        System.out.println("\n1. Select the patron");
+        System.out.println("2. Explore the catalogue");
+        System.out.println("3. View the patron's borrowed books");
+        System.out.println("4. View the patron's favourite books");
+        System.out.println("5. Enter Admin mode");
         System.out.println("X. Exit the system");
         System.out.print("\nEnter a choice: ");
 
@@ -36,15 +39,18 @@ public class Library {
 
             switch (selection) {
                 case '1':
-                    catalogue.catalogueMenu();
+                    selectPatron();
                     break;
                 case '2':
-                    //TODO patron.showRecord();
+                    catalogue.catalogueMenu();
                     break;
                 case '3':
-                    //TODO patron.showFavourites();
+                    showPatronBorrowed();
                     break;
                 case '4':
+                    showPatronFavourites();
+                    break;
+                case '5':
                     System.out.println("Welcome to the administration menu!");
                     adminMenu();
                 default:
@@ -53,7 +59,6 @@ public class Library {
                     break;
             }
             mainMenu();
-            mainSelection();
         }
 
         System.exit(0);
@@ -98,6 +103,32 @@ public class Library {
         mainMenu();
     }
 
+    private void selectPatron() {
+        if (patrons.isEmpty())
+            System.out.println("There are no patrons in the system.");
+        else {
+            System.out.println("Select a patron from the list below: ");
+            for (Patron patron : patrons)
+                System.out.println(patron);
+
+            boolean patronSelected = false;
+
+            System.out.print("Enter your choice: ");
+            String chosenPatron = sc.nextLine();
+
+            for (Patron patron : patrons) {
+                if (patron.getName().toLowerCase().equals(chosenPatron.toLowerCase())) {
+                    selectedPatron = patron;
+                    System.out.println("The patron " + chosenPatron + " is now selected");
+                    patronSelected = true;
+                    break;
+                }
+            }
+            if (!patronSelected)
+                System.out.println("The patron " + chosenPatron + " does not exist in the system.");
+        }
+    }
+
     private void addPatron() {
         System.out.print("Enter the patron name to be added: ");
         Patron newPatron = new Patron(sc.nextLine());
@@ -128,5 +159,22 @@ public class Library {
         }
     }
 
+    private void showPatronBorrowed() {
+        if (selectedPatron == null)
+            System.out.println("No patron has been selected");
+        else
+            selectedPatron.showBorrowed();
+    }
+
+    private void showPatronFavourites() {
+        if (selectedPatron == null)
+            System.out.println("No patron has been selected");
+        else
+            selectedPatron.showFavourites();
+    }
+
+    public static Patron getSelectedPatron() {
+        return selectedPatron;
+    }
 
 }

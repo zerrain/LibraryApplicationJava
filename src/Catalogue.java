@@ -59,7 +59,7 @@ public class Catalogue {
                     displayBooksByAuthor();
                     break;
                 case '7':
-                    //TODO borrowBook();
+                    borrowBook();
                     break;
                 case '8':
                     //TODO returnBook();
@@ -74,10 +74,8 @@ public class Catalogue {
             }
             catalogueMenu();
         }
-
         library.mainMenu();
     }
-
 
 
     private void displayBooks() {
@@ -108,7 +106,7 @@ public class Catalogue {
     }
 
     private void displayAuthors() {
-        for (Author author: authors)
+        for (Author author : authors)
             System.out.println(author);
     }
 
@@ -125,7 +123,21 @@ public class Catalogue {
     }
 
     private void borrowBook() {
-
+        if (availableBooks.isEmpty())
+            System.out.println("There are no available books to borrow");
+        else {
+            System.out.println("Select the book to borrowed by the patron " + Library.getSelectedPatron().getName());
+            for (Book book : availableBooks)
+                System.out.println(book);
+            System.out.print("Enter the book name: ");
+            String selectedBook = Library.sc.nextLine();
+            for (Book book : availableBooks)
+                if (book.getBookName().toLowerCase().equals(selectedBook.toLowerCase())) {
+                    availableBooks.remove(book);
+                    borrowedBooks.add(book);
+                    Library.getSelectedPatron().borrowBook(book);
+                }
+        }
     }
 
     private void returnBook() {
