@@ -28,6 +28,7 @@ public class Catalogue {
         System.out.println("6. Display all books by an author");
         System.out.println("7. Borrow a book");
         System.out.println("8. Return a book");
+        System.out.println("8. Favourite a book");
         System.out.println("R. Return to previous menu");
         System.out.print("\nEnter a choice: ");
 
@@ -63,6 +64,9 @@ public class Catalogue {
                 case '8':
                     returnBook();
                     break;
+                case '9':
+                    favouriteBook();
+                    break;
                 default:
                     System.out.print("Please enter a valid input: ");
                     catalogueSelection();
@@ -94,9 +98,9 @@ public class Catalogue {
             System.out.println("There are no genres in the systen");
         else {
             System.out.print("Enter a genre: ");
-            String selectedGenre = Library.sc.nextLine().toLowerCase();
+            String selectedGenre = Library.sc.nextLine();
             for (Book book : books)
-                if (book.getGenreName().toLowerCase().equals(selectedGenre))
+                if (book.getGenreName().equalsIgnoreCase(selectedGenre))
                     System.out.println(book);
         }
     }
@@ -111,9 +115,9 @@ public class Catalogue {
             System.out.println("There are no authors in the systen");
         else {
             System.out.print("Enter an author: ");
-            String selectedAuthor = Library.sc.nextLine().toLowerCase();
+            String selectedAuthor = Library.sc.nextLine();
             for (Book book : books)
-                if (book.getAuthorName().toLowerCase().equals(selectedAuthor))
+                if (book.getAuthorName().equalsIgnoreCase(selectedAuthor))
                     System.out.println(book);
         }
     }
@@ -130,7 +134,7 @@ public class Catalogue {
             System.out.print("Enter the book name: ");
             String selectedBook = Library.sc.nextLine();
             for (Book book : availableBooks)
-                if (book.getBookName().toLowerCase().equals(selectedBook.toLowerCase())) {
+                if (book.getBookName().equalsIgnoreCase(selectedBook)) {
                     borrowedBooks.add(book);
                     availableBooks.remove(book);
                     Library.getSelectedPatron().borrowBook(book);
@@ -150,14 +154,32 @@ public class Catalogue {
             System.out.print("Enter the book name: ");
             String selectedBook = Library.sc.nextLine();
             for (Book book : Library.getSelectedPatron().getBorrowed())
-                if (book.getBookName().toLowerCase().equals(selectedBook.toLowerCase())) {
+                if (book.getBookName().equalsIgnoreCase(selectedBook)) {
                     borrowedBooks.remove(book);
                     availableBooks.add(book);
                     Library.getSelectedPatron().returnBook(book);
                 }
         }
-
     }
+
+    private void favouriteBook() {
+        if (Library.getSelectedPatron() == null)
+            System.out.println("No patron has been selected");
+        else if (books.isEmpty())
+            System.out.println("There are no books in the system available to favourite");
+        else {
+            System.out.println("Select the book to be favourited by the patron " + Library.getSelectedPatron().getName());
+            for (Book book : books)
+                System.out.println(book);
+            System.out.print("Enter the book name: ");
+            String selectedBook = Library.sc.nextLine();
+            for (Book book : books)
+                if (book.getBookName().equalsIgnoreCase(selectedBook)) {
+                    Library.getSelectedPatron().favouriteBook(book);
+                }
+        }
+    }
+
 
     public void addBook() {
         System.out.print("Enter the book name: ");
@@ -190,7 +212,7 @@ public class Catalogue {
             String bookToRemove = Library.sc.nextLine();
 
             for (Book book : books)
-                if (book.getBookName().equals(bookToRemove)) {
+                if (book.getBookName().equalsIgnoreCase(bookToRemove)) {
                     books.remove(book);
                     authors.remove(book.getAuthor());
                     genres.remove(book.getGenre());

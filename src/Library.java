@@ -117,7 +117,7 @@ public class Library {
             String chosenPatron = sc.nextLine();
 
             for (Patron patron : patrons) {
-                if (patron.getName().toLowerCase().equals(chosenPatron.toLowerCase())) {
+                if (patron.getName().equalsIgnoreCase(chosenPatron)) {
                     selectedPatron = patron;
                     System.out.println("The patron " + chosenPatron + " is now selected");
                     patronSelected = true;
@@ -148,7 +148,7 @@ public class Library {
             String patronToRemove = sc.nextLine();
 
             for (Patron patron : patrons)
-                if (patron.getName().equals(patronToRemove)) {
+                if (patron.getName().equalsIgnoreCase(patronToRemove)) {
                     patrons.remove(patron);
                     System.out.println("Patron " + patronToRemove + " has been removed!");
                     patronExists = true;
