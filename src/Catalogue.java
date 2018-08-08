@@ -28,7 +28,6 @@ public class Catalogue {
         System.out.println("6. Display all books by an author");
         System.out.println("7. Borrow a book");
         System.out.println("8. Return a book");
-        System.out.println("9. Place a hold");
         System.out.println("R. Return to previous menu");
         System.out.print("\nEnter a choice: ");
 
@@ -62,10 +61,7 @@ public class Catalogue {
                     borrowBook();
                     break;
                 case '8':
-                    //TODO returnBook();
-                    break;
-                case '9':
-                    //TODO holdBook();
+                    returnBook();
                     break;
                 default:
                     System.out.print("Please enter a valid input: ");
@@ -123,7 +119,9 @@ public class Catalogue {
     }
 
     private void borrowBook() {
-        if (availableBooks.isEmpty())
+        if (Library.getSelectedPatron() == null)
+            System.out.println("No patron has been selected");
+        else if (availableBooks.isEmpty())
             System.out.println("There are no available books to borrow");
         else {
             System.out.println("Select the book to borrowed by the patron " + Library.getSelectedPatron().getName());
@@ -133,18 +131,31 @@ public class Catalogue {
             String selectedBook = Library.sc.nextLine();
             for (Book book : availableBooks)
                 if (book.getBookName().toLowerCase().equals(selectedBook.toLowerCase())) {
-                    availableBooks.remove(book);
                     borrowedBooks.add(book);
+                    availableBooks.remove(book);
                     Library.getSelectedPatron().borrowBook(book);
                 }
         }
     }
 
     private void returnBook() {
-
-    }
-
-    private void holdBook() {
+        if (Library.getSelectedPatron() == null)
+            System.out.println("No patron has been selected");
+        else if (Library.getSelectedPatron().getBorrowed().isEmpty())
+            System.out.println("The patron " + Library.getSelectedPatron().getName() + " has no borrowed books to return");
+        else {
+            System.out.println("Select the book to be returned by the patron " + Library.getSelectedPatron().getName());
+            for (Book book : Library.getSelectedPatron().getBorrowed())
+                System.out.println(book);
+            System.out.print("Enter the book name: ");
+            String selectedBook = Library.sc.nextLine();
+            for (Book book : Library.getSelectedPatron().getBorrowed())
+                if (book.getBookName().toLowerCase().equals(selectedBook.toLowerCase())) {
+                    borrowedBooks.remove(book);
+                    availableBooks.add(book);
+                    Library.getSelectedPatron().returnBook(book);
+                }
+        }
 
     }
 
@@ -165,10 +176,6 @@ public class Catalogue {
         availableBooks.add(newBook);
 
         System.out.println("The book " + newBook + " was added to the booklist.");
-
-        System.out.println("The current list of books are: ");
-        for (Book book : books)
-            System.out.println(book);
     }
 
     public void removeBook() {
@@ -176,6 +183,9 @@ public class Catalogue {
         if (books.isEmpty()) {
             System.out.println("There are no books in the system. ");
         } else {
+            System.out.println("The current list of books are: ");
+            for (Book book : books)
+                System.out.println(book);
             System.out.print("Enter the book name to be removed: ");
             String bookToRemove = Library.sc.nextLine();
 

@@ -19,9 +19,22 @@ public class Patron {
         System.out.println("The book " + book + " is now borrowed by the patron " + name);
     }
 
+    public void returnBook(Book book) {
+        borrowed.remove(book);
+        System.out.println("The book " + book + " has been returned by the patron " + name);
+    }
+
     public void favouriteBook(Book book) {
         favourites.add(book);
         System.out.println("The book " + book + " is now favourited by the patron " + name);
+    }
+
+    public LinkedList<Book> getBorrowed() {
+        return borrowed;
+    }
+
+    public LinkedList<Book> getFavourites() {
+        return favourites;
     }
 
     public void showBorrowed() {
