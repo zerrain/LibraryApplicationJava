@@ -3,7 +3,6 @@ public class Author {
     private String authorName;
 
     public Author() {
-
     }
 
     public Author(String authorName) {

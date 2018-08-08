@@ -10,7 +10,6 @@ public class Catalogue {
     private static LinkedList<Author> authors = new LinkedList<>();
 
     public Catalogue() {
-
     }
 
     public Catalogue(Library library) {
@@ -76,7 +75,6 @@ public class Catalogue {
         }
         library.mainMenu();
     }
-
 
     private void displayBooks() {
         for (Book book : books)
@@ -179,7 +177,6 @@ public class Catalogue {
                 }
         }
     }
-
 
     public void addBook() {
         System.out.print("Enter the book name: ");

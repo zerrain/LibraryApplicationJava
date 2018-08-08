@@ -7,7 +7,6 @@ public class Library {
     private Catalogue catalogue;
     private static LinkedList<Patron> patrons = new LinkedList<>();
     private static Patron selectedPatron;
-    private Boolean patreonSelected = false;
 
     public Library() {
         System.out.println("Welcome to the Library!");
@@ -60,7 +59,6 @@ public class Library {
             }
             mainMenu();
         }
-
         System.exit(0);
     }
 
@@ -99,7 +97,6 @@ public class Library {
             }
             adminMenu();
         }
-
         mainMenu();
     }
 
@@ -110,12 +107,9 @@ public class Library {
             System.out.println("Select a patron from the list below: ");
             for (Patron patron : patrons)
                 System.out.println(patron);
-
             boolean patronSelected = false;
-
             System.out.print("Enter your choice: ");
             String chosenPatron = sc.nextLine();
-
             for (Patron patron : patrons) {
                 if (patron.getName().equalsIgnoreCase(chosenPatron)) {
                     selectedPatron = patron;
@@ -133,8 +127,6 @@ public class Library {
         System.out.print("Enter the patron name to be added: ");
         Patron newPatron = new Patron(sc.nextLine());
         patrons.add(newPatron);
-
-
         System.out.println(newPatron + " added");
     }
 
@@ -142,18 +134,15 @@ public class Library {
         boolean patronExists = false;
         if (patrons.isEmpty()) {
             System.out.println("There are no patrons in the system. ");
-        }
-        else {
+        } else {
             System.out.print("Enter the patron name to be removed: ");
             String patronToRemove = sc.nextLine();
-
             for (Patron patron : patrons)
                 if (patron.getName().equalsIgnoreCase(patronToRemove)) {
                     patrons.remove(patron);
                     System.out.println("Patron " + patronToRemove + " has been removed!");
                     patronExists = true;
                 }
-
             if (!patronExists)
                 System.out.println("This patron does not exist in the system. ");
         }

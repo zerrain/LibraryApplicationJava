@@ -7,7 +7,6 @@ public class Patron {
     private LinkedList<Book> favourites = new LinkedList<>();
 
     public Patron() {
-
     }
 
     public Patron(String name) {
@@ -53,8 +52,6 @@ public class Patron {
                 System.out.println(book);
     }
 
-
-
     public String getName() {
         return this.name;
     }
@@ -63,5 +60,4 @@ public class Patron {
     public String toString() {
         return this.name;
     }
-
 }
