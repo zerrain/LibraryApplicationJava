@@ -1,6 +1,7 @@
+import java.io.*;
 import java.util.LinkedList;
 
-public class Catalogue {
+public class Catalogue implements Serializable {
 
     private Library library;
     private static LinkedList<Book> availableBooks = new LinkedList<>();
@@ -8,6 +9,16 @@ public class Catalogue {
     private static LinkedList<Book> books = new LinkedList<>();
     private static LinkedList<Genre> genres = new LinkedList<>();
     private static LinkedList<Author> authors = new LinkedList<>();
+    private ObjectInputStream oisAvailableBooks;
+    private ObjectInputStream oisBorrowedBooks;
+    private ObjectInputStream oisBooks;
+    private ObjectInputStream oisGenres;
+    private ObjectInputStream oisAuthors;
+    private ObjectOutputStream ousAvailableBooks;
+    private ObjectOutputStream ousBorrowedBooks;
+    private ObjectOutputStream ousBooks;
+    private ObjectOutputStream ousGenres;
+    private ObjectOutputStream ousAuthors;
 
     public Catalogue() {
     }
@@ -27,7 +38,7 @@ public class Catalogue {
         System.out.println("6. Display all books by an author");
         System.out.println("7. Borrow a book");
         System.out.println("8. Return a book");
-        System.out.println("8. Favourite a book");
+        System.out.println("9. Favourite a book");
         System.out.println("R. Return to previous menu");
         System.out.print("\nEnter a choice: ");
 
@@ -77,8 +88,11 @@ public class Catalogue {
     }
 
     private void displayBooks() {
-        for (Book book : books)
-            System.out.println(book);
+        if (books.isEmpty())
+            System.out.println("There are no books in the system");
+        else
+            for (Book book : books)
+                System.out.println(book);
     }
 
     private void displayAvailableBooks() {
@@ -199,18 +213,19 @@ public class Catalogue {
 
     public void removeBook() {
         boolean bookExists = false;
-        if (books.isEmpty()) {
-            System.out.println("There are no books in the system. ");
+        if (availableBooks.isEmpty()) {
+            System.out.println("There are no available books in the system. ");
         } else {
-            System.out.println("The current list of books are: ");
-            for (Book book : books)
+            System.out.println("The current list of available books are: ");
+            for (Book book : availableBooks)
                 System.out.println(book);
             System.out.print("Enter the book name to be removed: ");
             String bookToRemove = Library.sc.nextLine();
 
-            for (Book book : books)
+            for (Book book : availableBooks)
                 if (book.getBookName().equalsIgnoreCase(bookToRemove)) {
                     books.remove(book);
+                    availableBooks.remove(book);
                     authors.remove(book.getAuthor());
                     genres.remove(book.getGenre());
                     System.out.println("Book " + bookToRemove + " has been removed!");
@@ -218,6 +233,47 @@ public class Catalogue {
                 }
             if (!bookExists)
                 System.out.println("This book does not exist in the system. ");
+        }
+    }
+
+    public void readCatalogueFromFile() {
+
+        ObjectInputStream[] inputStreams = {oisAuthors, oisGenres, oisGenres, oisBorrowedBooks, oisBooks};
+        String[] fileNames = {"authors.txt", "genres.txt", "availablebooks.txt", "borrowedbooks.txt", "books.txt"};
+        LinkedList[] linkedLists = {authors, genres, availableBooks, borrowedBooks, books};
+
+        for (int i = 0; i < inputStreams.length; i++) {
+
+            try {
+                inputStreams[i] = new ObjectInputStream(new FileInputStream(fileNames[i]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                linkedLists[i] = (LinkedList) inputStreams[i].readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void writeCatalogueToFile() {
+        ObjectOutputStream[] outputStreams = {ousAuthors, ousGenres, ousAvailableBooks, ousBorrowedBooks, ousBooks};
+        String[] fileNames = {"authors.txt", "genres.txt", "availablebooks.txt", "borrowedbooks.txt", "books.txt"};
+        LinkedList[] linkedLists = {authors, genres, availableBooks, borrowedBooks, books};
+
+        for (int i = 0; i < outputStreams.length; i++) {
+
+            try {
+                outputStreams[i] = new ObjectOutputStream(new FileOutputStream(fileNames[i]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                outputStreams[i].writeObject(linkedLists[i]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

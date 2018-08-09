@@ -1,12 +1,15 @@
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class Library {
+public class Library implements Serializable {
 
-    public static final Scanner sc = new Scanner(System.in);
+    public static final transient Scanner sc = new Scanner(System.in);
     private Catalogue catalogue;
     private static LinkedList<Patron> patrons = new LinkedList<>();
-    private static Patron selectedPatron;
+    private static transient Patron selectedPatron;
+    private ObjectInputStream oisPatrons;
+    private ObjectOutputStream ousPatrons;
 
     public Library() {
         System.out.println("Welcome to the Library!");
@@ -24,6 +27,8 @@ public class Library {
         System.out.println("3. View the patron's borrowed books");
         System.out.println("4. View the patron's favourite books");
         System.out.println("5. Enter Admin mode");
+        System.out.println("6. Read data from file");
+        System.out.println("7. Write data to file");
         System.out.println("X. Exit the system");
         System.out.print("\nEnter a choice: ");
 
@@ -52,6 +57,13 @@ public class Library {
                 case '5':
                     System.out.println("Welcome to the administration menu!");
                     adminMenu();
+                    break;
+                case '6':
+                    readFromFile();
+                    break;
+                case '7':
+                    writeToFile();
+                    break;
                 default:
                     System.out.print("Please enter a valid input: ");
                     mainSelection();
@@ -138,13 +150,15 @@ public class Library {
             System.out.print("Enter the patron name to be removed: ");
             String patronToRemove = sc.nextLine();
             for (Patron patron : patrons)
-                if (patron.getName().equalsIgnoreCase(patronToRemove)) {
+                if (patron.getName().equalsIgnoreCase(patronToRemove) && patron.getBorrowed().isEmpty()) {
                     patrons.remove(patron);
                     System.out.println("Patron " + patronToRemove + " has been removed!");
                     patronExists = true;
                 }
+                else if (!(patron.getBorrowed().isEmpty()))
+                    System.out.println("The patron " + patron.getName() + " currently has borrowed books.");
             if (!patronExists)
-                System.out.println("This patron does not exist in the system. ");
+                System.out.println("This patron does not exist in the system.");
         }
     }
 
@@ -160,6 +174,25 @@ public class Library {
             System.out.println("No patron has been selected");
         else
             selectedPatron.showFavourites();
+    }
+
+    private void writeToFile() {
+        try{ousPatrons = new ObjectOutputStream(new FileOutputStream("patrons.txt"));}
+        catch (Exception e) {e.printStackTrace();}
+        try {ousPatrons.writeObject(patrons);}
+        catch (Exception e) {e.printStackTrace();}
+
+        catalogue.writeCatalogueToFile();
+
+    }
+
+    private void readFromFile() {
+        try{oisPatrons = new ObjectInputStream(new FileInputStream("patrons.txt"));}
+        catch (Exception e) {e.printStackTrace();}
+        try {patrons = (LinkedList) oisPatrons.readObject();}
+        catch (Exception e) {e.printStackTrace();}
+
+        catalogue.readCatalogueFromFile();
     }
 
     public static Patron getSelectedPatron() {

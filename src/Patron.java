@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Patron {
+public class Patron implements Serializable {
 
     private String name;
     private LinkedList<Book> borrowed = new LinkedList<>();
