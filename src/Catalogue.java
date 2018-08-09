@@ -147,9 +147,10 @@ public class Catalogue implements Serializable {
             String selectedBook = Library.sc.nextLine();
             for (Book book : availableBooks)
                 if (book.getBookName().equalsIgnoreCase(selectedBook)) {
-                    borrowedBooks.add(book);
                     availableBooks.remove(book);
+                    borrowedBooks.add(book);
                     Library.getSelectedPatron().borrowBook(book);
+                    library.writeToFile();
                 }
         }
     }
@@ -170,6 +171,7 @@ public class Catalogue implements Serializable {
                     borrowedBooks.remove(book);
                     availableBooks.add(book);
                     Library.getSelectedPatron().returnBook(book);
+                    library.writeToFile();
                 }
         }
     }
@@ -188,6 +190,7 @@ public class Catalogue implements Serializable {
             for (Book book : books)
                 if (book.getBookName().equalsIgnoreCase(selectedBook)) {
                     Library.getSelectedPatron().favouriteBook(book);
+                    library.writeToFile();
                 }
         }
     }
@@ -207,6 +210,7 @@ public class Catalogue implements Serializable {
         Book newBook = new Book(bookName, newAuthor, newGenre);
         books.add(newBook);
         availableBooks.add(newBook);
+        library.writeToFile();
 
         System.out.println("The book " + newBook + " was added to the booklist.");
     }
@@ -228,6 +232,7 @@ public class Catalogue implements Serializable {
                     availableBooks.remove(book);
                     authors.remove(book.getAuthor());
                     genres.remove(book.getGenre());
+                    library.writeToFile();
                     System.out.println("Book " + bookToRemove + " has been removed!");
                     bookExists = true;
                 }
@@ -236,10 +241,10 @@ public class Catalogue implements Serializable {
         }
     }
 
-    public void readCatalogueFromFile() {
+    public void readCatalogueFromFile() throws IOException{
 
         ObjectInputStream[] inputStreams = {oisAuthors, oisGenres, oisGenres, oisBorrowedBooks, oisBooks};
-        String[] fileNames = {"authors.txt", "genres.txt", "availablebooks.txt", "borrowedbooks.txt", "books.txt"};
+        String[] fileNames = {"authors.ser", "genres.ser", "availablebooks.ser", "borrowedbooks.ser", "books.ser"};
         LinkedList[] linkedLists = {authors, genres, availableBooks, borrowedBooks, books};
 
         for (int i = 0; i < inputStreams.length; i++) {
@@ -247,19 +252,18 @@ public class Catalogue implements Serializable {
             try {
                 inputStreams[i] = new ObjectInputStream(new FileInputStream(fileNames[i]));
             } catch (Exception e) {
-                e.printStackTrace();
             }
             try {
                 linkedLists[i] = (LinkedList) inputStreams[i].readObject();
             } catch (Exception e) {
-                e.printStackTrace();
+                new File(fileNames[i]).createNewFile();
             }
         }
     }
 
     public void writeCatalogueToFile() {
         ObjectOutputStream[] outputStreams = {ousAuthors, ousGenres, ousAvailableBooks, ousBorrowedBooks, ousBooks};
-        String[] fileNames = {"authors.txt", "genres.txt", "availablebooks.txt", "borrowedbooks.txt", "books.txt"};
+        String[] fileNames = {"authors.ser", "genres.ser", "availablebooks.ser", "borrowedbooks.ser", "books.ser"};
         LinkedList[] linkedLists = {authors, genres, availableBooks, borrowedBooks, books};
 
         for (int i = 0; i < outputStreams.length; i++) {
@@ -276,4 +280,6 @@ public class Catalogue implements Serializable {
             }
         }
     }
+
+
 }

@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Library implements Serializable {
 
     public static final transient Scanner sc = new Scanner(System.in);
+    private static Library library;
     private Catalogue catalogue;
     private static LinkedList<Patron> patrons = new LinkedList<>();
     private static transient Patron selectedPatron;
@@ -16,8 +17,10 @@ public class Library implements Serializable {
         catalogue = new Catalogue(this);
     }
 
-    public static void main(String[] args) {
-        new Library().mainMenu();
+    public static void main(String[] args) throws IOException {
+        library = new Library();
+        library.readFromFile();
+        library.mainMenu();
     }
 
     public void mainMenu() {
@@ -27,8 +30,6 @@ public class Library implements Serializable {
         System.out.println("3. View the patron's borrowed books");
         System.out.println("4. View the patron's favourite books");
         System.out.println("5. Enter Admin mode");
-        System.out.println("6. Read data from file");
-        System.out.println("7. Write data to file");
         System.out.println("X. Exit the system");
         System.out.print("\nEnter a choice: ");
 
@@ -37,7 +38,14 @@ public class Library implements Serializable {
 
     private void mainSelection() {
 
-        char selection = sc.nextLine().toLowerCase().charAt(0);
+        char selection = ' ';
+
+        try {
+            selection = sc.nextLine().toLowerCase().charAt(0);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.print("Please enter a valid input: ");
+            mainMenu();
+        }
 
         while (selection != 'x') {
 
@@ -58,12 +66,6 @@ public class Library implements Serializable {
                     System.out.println("Welcome to the administration menu!");
                     adminMenu();
                     break;
-                case '6':
-                    readFromFile();
-                    break;
-                case '7':
-                    writeToFile();
-                    break;
                 default:
                     System.out.print("Please enter a valid input: ");
                     mainSelection();
@@ -71,6 +73,7 @@ public class Library implements Serializable {
             }
             mainMenu();
         }
+        writeToFile();
         System.exit(0);
     }
 
@@ -87,7 +90,15 @@ public class Library implements Serializable {
     }
 
     private void adminSelection() {
-        char selection = sc.nextLine().toLowerCase().charAt(0);
+
+        char selection = ' ';
+
+        try {
+            selection = sc.nextLine().toLowerCase().charAt(0);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.print("Please enter a valid input: ");
+            mainMenu();
+        }
 
         while (selection != 'r') {
             switch (selection) {
@@ -140,6 +151,7 @@ public class Library implements Serializable {
         Patron newPatron = new Patron(sc.nextLine());
         patrons.add(newPatron);
         System.out.println(newPatron + " added");
+        writeToFile();
     }
 
     private void removePatron() {
@@ -152,10 +164,10 @@ public class Library implements Serializable {
             for (Patron patron : patrons)
                 if (patron.getName().equalsIgnoreCase(patronToRemove) && patron.getBorrowed().isEmpty()) {
                     patrons.remove(patron);
+                    writeToFile();
                     System.out.println("Patron " + patronToRemove + " has been removed!");
                     patronExists = true;
-                }
-                else if (!(patron.getBorrowed().isEmpty()))
+                } else if (!(patron.getBorrowed().isEmpty()))
                     System.out.println("The patron " + patron.getName() + " currently has borrowed books.");
             if (!patronExists)
                 System.out.println("This patron does not exist in the system.");
@@ -176,21 +188,32 @@ public class Library implements Serializable {
             selectedPatron.showFavourites();
     }
 
-    private void writeToFile() {
-        try{ousPatrons = new ObjectOutputStream(new FileOutputStream("patrons.txt"));}
-        catch (Exception e) {e.printStackTrace();}
-        try {ousPatrons.writeObject(patrons);}
-        catch (Exception e) {e.printStackTrace();}
+    public void writeToFile() {
+        try {
+            ousPatrons = new ObjectOutputStream(new FileOutputStream("patrons.ser"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            ousPatrons.writeObject(patrons);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         catalogue.writeCatalogueToFile();
 
     }
 
-    private void readFromFile() {
-        try{oisPatrons = new ObjectInputStream(new FileInputStream("patrons.txt"));}
-        catch (Exception e) {e.printStackTrace();}
-        try {patrons = (LinkedList) oisPatrons.readObject();}
-        catch (Exception e) {e.printStackTrace();}
+    private void readFromFile() throws IOException {
+        try {
+            oisPatrons = new ObjectInputStream(new FileInputStream("patrons.ser"));
+        } catch (Exception e) {
+        }
+        try {
+            patrons = (LinkedList) oisPatrons.readObject();
+        } catch (Exception e) {
+            new File("patrons.ser").createNewFile();
+        }
 
         catalogue.readCatalogueFromFile();
     }
