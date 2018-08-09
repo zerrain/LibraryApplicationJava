@@ -46,7 +46,15 @@ public class Catalogue implements Serializable {
     }
 
     private void catalogueSelection() {
-        char selection = Library.sc.nextLine().toLowerCase().charAt(0);
+
+        char selection = ' ';
+
+        try {
+            selection = Library.sc.nextLine().toLowerCase().charAt(0);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.print("Please enter a valid input: ");
+            catalogueMenu();
+        }
 
         while (selection != 'r') {
             switch (selection) {
